@@ -8,4 +8,12 @@ app.use(cors({        // this allow our server to accept requests from the domai
     credentials: true,
 }))
 
+
+app.use(express.json()); // this will parse the incoming request with JSON payloads
+app.use(express.urlencoded({ extended: true })); // this will parse the incoming request with URL-encoded payloads
+
+import userRoutes from './routes/user.routes.js';
+app.use('/api/v1/users', userRoutes); // this will use the user routes for the API version 1
+
 export { app };
+
