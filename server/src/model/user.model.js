@@ -28,6 +28,8 @@ const userSchema = new Schema(
       required: [true, "Password is required"],
       // select: false, // this will not return the password field when we query the user
     },
+
+    
   },
   {
     timestamps: true, // this will create createdAt and updatedAt fields
