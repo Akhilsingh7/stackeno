@@ -1,38 +1,44 @@
 import { User } from "../model/user.model.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
+const registerUser = asyncHandler(async (req, res) => {
+    const { email, username, password, position } = req.body;
 
-const registerUser = async (req, res) => {
+    if (!email || !username || !password || !position) {
+        throw new ApiError(400, "All fields are required");
+    }
+
+    const existingUser = await User.findOne({
+        $or: [{ email }, { username }]
+    });
+
+    if (existingUser) {
+        throw new ApiError(400, "User already exists with this email or username");
+    }
+
     try {
-        // Simulate user registration logic
-        const { username, password , fullName, email } = req.body;
-        if (!username || !password) {
-            return res.status(400).json({ message: "Username and password are required" });
-        }
-
-
-        // Here you would typically save the user to the database
-        // For now, we just return a success message
-
-        const user =  await User.create({
-            username : username.toLowerCase(),
+        const user = await User.create({
             email,
-            fullName,
+            username: username.toLowerCase(),
             password,
+            position
         });
 
-        if(!user) {
-            return res.status(500).json({ message: "Error creating user" });
+        const createdUser = await User.findById(user._id).select("-password -refreshToken");
+
+        if (!createdUser) {
+            throw new ApiError(500, "Something went wrong while creating the user");
         }
 
-
-
-
-        res.status(201).json({ message: "User registered successfully", user: user });
+        return res.status(201).json(
+            new ApiResponse(201, createdUser, "User registered successfully")
+        );
     } catch (error) {
-        console.error("Error registering user:", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-}
 
-export {
-    registerUser}
+        throw new ApiError(500, "Error creating user: " + error.message);
+    }
+});
+
+export { registerUser };

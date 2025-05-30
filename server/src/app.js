@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import { errorHandler } from './middleware/error.middleware.js';
 
 const app = express();
 
@@ -14,6 +15,8 @@ app.use(express.urlencoded({ extended: true })); // this will parse the incoming
 
 import userRoutes from './routes/user.routes.js';
 app.use('/api/v1/users', userRoutes); // this will use the user routes for the API version 1
+
+app.use(errorHandler);
 
 export { app };
 
