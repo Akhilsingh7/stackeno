@@ -30,7 +30,6 @@ const Register = () => {
         password: "",
         position: "Software Engineer L1",
       });
-
   };
 
   return (
@@ -38,6 +37,7 @@ const Register = () => {
       <div>
         <form className="flex flex-col items-center justify-center gap-8 w-1/2 mx-auto mt-20">
           {error && <div className="text-red-500">{error.message}</div>}
+          {data && <div className="text-green-500">{data.message}</div>}
           <input
             type="text"
             name="username"
