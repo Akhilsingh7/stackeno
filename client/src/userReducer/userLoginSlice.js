@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { useEffect } from "react";
 
 
 
@@ -25,6 +26,7 @@ export const postLoginUser = createAsyncThunk(
             return data;
         }
         catch (error) {
+            console.log("error", error);
             return thunkApi.rejectWithValue({
                 message: error.response.data.message || "An error occurred"
             });
@@ -35,14 +37,20 @@ export const postLoginUser = createAsyncThunk(
 const initialState = {
     data: null,
     loading: false,
-    error: null
+    error: null,
 }
 
 
 const userLoginSlice = createSlice({
     name: "userLogin",
     initialState,
-    reducers: {},
+    reducers: {
+        resetLoginState: (state) => {
+            state.loading = false;
+            state.error = null;
+            state.data = null;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(postLoginUser.pending, (state) => {
@@ -52,7 +60,7 @@ const userLoginSlice = createSlice({
             .addCase(postLoginUser.fulfilled, (state, action) => {
                 state.loading = false;
                 state.data = action.payload;
-                state.error = null;
+                state.error = null; 
             })
             .addCase(postLoginUser.rejected, (state, action) => {
                 state.loading = false;
@@ -61,5 +69,6 @@ const userLoginSlice = createSlice({
     }               
 })
 
+export const { resetLoginState } = userLoginSlice.actions;
 export default userLoginSlice.reducer;
 

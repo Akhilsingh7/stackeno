@@ -1,60 +1,34 @@
-import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { userProfileGet } from './userReducer/userProfileSlice';
 
-function App() {
-  // const [count, setCount] = useState(0);
+const App = () => {
+  // const dispatch = useDispatch();
+  const { isLoggedIn , user } = useSelector((state) => state.userProfile);
 
   // useEffect(() => {
-  //   fetch("/api/v1/users/register", {  //proxy is set in vite.config.js to redirect /api requests to the backend server
-  //     method: "POST", // Use POST for sending data
-  //     headers: {
-  //       "Content-Type": "application/json"
-  //     },
-  //     body: JSON.stringify({
-  //       username: "testuser",
-  //       password: "testpassword",
-  //       fullName: "Test User",
-  //       email: "test@gmail.com"
-  //     })
-  //   })
-  //   .then(response => response.json())
-  //   .then(data => console.log("data",data))
-  //   .catch(error => console.error("Error:", error));
-  // },[])
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   const username = document.getElementById("username_input").value;
-  //   const password = document.getElementById("password_input").value;
-  //   const fullName = document.getElementById("fullName_input").value;
-  //   const email = document.getElementById("email_input").value;
-
-  //   fetch("/api/v1/users/register", {  //proxy is set in vite.config.js to redirect /api requests to the backend server
-  //     method: "POST", // Use POST for sending data
-  //     headers: {
-  //       "Content-Type": "application/json"
-  //     },
-  //     body: JSON.stringify({
-  //       username,
-  //       password,
-  //       fullName,
-  //       email
-  //     })
-  //   })
-  //   .then(response => response.json())
-  //   .then(data => console.log("data",data))
-  //   .catch(error => console.error("Error:", error));
-
-  // }
+  //    dispatch(userProfileGet());
+  // }, [dispatch]);
     
-  return (
-    <>
-    This is the App component
-    </>
+  // if (loading) {
+  //   return <div className="flex justify-center items-center min-h-screen">
+  //     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  //   </div>;
+  // }
+  console.log("user-app", user);
+  console.log("isLoggedIn-app", isLoggedIn);
+  // console.log("isLoggedIn-app");
 
+  
+  return (
+    <div className="max-w-4xl mx-auto mt-8 p-4">
+      <h1 className="text-3xl font-bold mb-4">Welcome to Home Page</h1>
+      {isLoggedIn ?   <p className="text-gray-600">You are logged in!</p> : <p className="text-gray-600">You are not logged in!</p>}
+      {
+        isLoggedIn && <p className="text-gray-600">Welcome {user?.username}</p>
+      }
+    </div>
   )
 }
 
-export default App
+export default App;

@@ -7,7 +7,7 @@ export const userProfileGet = createAsyncThunk("userProfile/get", async (_, thun
             headers: {
                 "Content-Type": "application/json",
             },
-            credentials: "include", // ← ADD THIS! Includes cookies in requests
+            withCredentials: true, // ← ADD THIS! Includes cookies in requests
         });
      
         // console.log("Profile response:", response.data.success);
@@ -19,7 +19,7 @@ export const userProfileGet = createAsyncThunk("userProfile/get", async (_, thun
         return response.data.data;
 
     } catch (error) {
-        console.error("Profile error:", error);
+        // console.error("Profile error:", error);
         return thunkAPI.rejectWithValue(error.response?.data?.message || "Failed to fetch profile");
     }
 })
@@ -27,31 +27,50 @@ export const userProfileGet = createAsyncThunk("userProfile/get", async (_, thun
 const initialState = {
     user: null,
     loading: false,
-    error: null
+    errorMessage: null,
+    isLoggedIn: false,
 }
-
+ 
 const userProfileSlice = createSlice({
-    name: "userProfile",
+    name: "userProfile",    
     initialState,
-    reducers: {},
+    reducers: {
+        // Add a reducer to handle logout
+        logout: (state) => {
+            state.user = null;
+            state.isLoggedIn = false;
+            state.errorMessage = null;
+            state.loading = false;  
+        },
+        login: (state) =>{
+            state.isLoggedIn = true;
+        },
+        updateUserProfile: (state, action)=>{
+            state.user = action.payload.user;
+            state.isLoggedIn = action.payload.isLoggedIn;
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(userProfileGet.pending, (state) => {
             state.loading = true;
-            state.error = null;   
+            state.errorMessage = null;      
         });
         builder.addCase(userProfileGet.fulfilled, (state, action) => {
             state.loading = false;
             state.user = action.payload;
-            state.error = null;
+            state.errorMessage = null;
+            state.isLoggedIn = true;
         }); 
         builder.addCase(userProfileGet.rejected, (state, action) => {
             state.loading = false;
-            state.error = action.payload;
+            state.errorMessage = action.payload;
             state.user = null;
+            state.isLoggedIn = false;
         });
     }
 })
 
+export const { logout, login, updateUserProfile } = userProfileSlice.actions;
 
 export default userProfileSlice.reducer;
 

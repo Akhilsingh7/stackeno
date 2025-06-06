@@ -116,4 +116,26 @@ const profileUser = asyncHandler(async (req, res) => {
     // throw new ApiError(401, "Unauthorized or User not foundsss");
 });
 
-export { registerUser, loginUser, profileUser };
+const logoutUser = asyncHandler(async (req, res) => {
+    const user = req.user;
+    if (!user) {
+        throw new ApiError(401, "Unauthorized or User not found");
+    }
+
+    user.refreshToken = null;
+    await user.save({ validateBeforeSave: false });
+
+    const options = {   
+        httpOnly: true,
+        secure: true,
+    }
+
+    res.clearCookie("accessToken", options);
+    res.clearCookie("refreshToken", options);
+
+    return res.status(200).json(
+        new ApiResponse(200, null, "User logged out successfully")
+    );
+});
+
+export { registerUser, loginUser, profileUser, logoutUser };

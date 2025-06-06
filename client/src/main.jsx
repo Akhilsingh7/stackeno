@@ -9,19 +9,42 @@ import Login from "./pages/Login.jsx";
 import { Provider } from "react-redux";
 import store from "./redux/store.js";
 import Profile from "./pages/Profile.jsx";
-createRoot(document.getElementById("root")).render(
+// import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import LayoutSecond from "./pages/LayoutSecond.jsx";
+import Blogs from "./pages/Blogs.jsx";
+// import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
+createRoot(document.getElementById("root")).render(
     <Provider store={store}>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout/>}>
-          <Route index element={<App/>} />
-          <Route path="/register" element={<Register/>} />
-          <Route path="/login" element={<Login/>} />
-          <Route path="/profile" element={<Profile/>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Layout/>}>
+                    <Route index element={<App/>} />
+                    <Route path="/login" element={<Login/>} />
+                    {/* <Route element={<ProtectedRoute/>}> */}
+                        <Route path="/profile" element={<Profile/>} />
+                    {/* </Route> */}
+                    <Route path="/blogs" element={<Blogs/>} />
+                </Route>
+            </Routes>
+        </BrowserRouter>
     </Provider>
-  
 );
+
+{/* <Route path="/" element={<Layout/>}>
+<Route index element={
+    // <ProtectedRoute>
+        <App/>
+    // </ProtectedRoute> 
+} />
+<Route path="/register" element={<Register/>} />
+<Route path="/login" element={<Login/>} />
+<Route path="/blogs" element={<Blogs/>} />
+<Route element={<LayoutSecond/>}>
+    <Route path="/profile" element={
+        // <ProtectedRoute>
+            <Profile/>
+        // </ProtectedRoute>
+    } />
+</Route>
+</Route> */}
