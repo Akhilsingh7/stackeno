@@ -19,14 +19,12 @@ export const postLoginUser = createAsyncThunk(
             const data = await response.json();
             
             if (!data.success) {
-                console.log("eror", data);
                 return thunkApi.rejectWithValue(data);
             }
 
             return data;
         }
         catch (error) {
-            console.log("error", error);
             return thunkApi.rejectWithValue({
                 message: error.response.data.message || "An error occurred"
             });
@@ -49,6 +47,9 @@ const userLoginSlice = createSlice({
             state.loading = false;
             state.error = null;
             state.data = null;
+        },
+        clearLoginError: (state) => {
+            state.error = null;
         }
     },
     extraReducers: (builder) => {
@@ -69,6 +70,6 @@ const userLoginSlice = createSlice({
     }               
 })
 
-export const { resetLoginState } = userLoginSlice.actions;
+export const { resetLoginState, clearLoginError } = userLoginSlice.actions;
 export default userLoginSlice.reducer;
 

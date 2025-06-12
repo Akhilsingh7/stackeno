@@ -14,8 +14,9 @@ export const postRegisterUser = createAsyncThunk(
             });
             
             const data = await response.json();
+
             
-            if (!response.success) {
+            if (!data.success) {
                 return thunkApi.rejectWithValue(data);
             }
 
@@ -40,7 +41,11 @@ const initialState = {
 const userRegisterSlice = createSlice({
     name: "userRegister",
     initialState,
-    reducers: {},
+    reducers: {
+        resetRegistrationError: (state) => {
+            state.error = null;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(postRegisterUser.pending, (state) => {
@@ -59,4 +64,5 @@ const userRegisterSlice = createSlice({
     },
 });
 
+export const { resetRegistrationError } = userRegisterSlice.actions;
 export default userRegisterSlice.reducer;

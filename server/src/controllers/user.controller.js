@@ -102,9 +102,7 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const profileUser = asyncHandler(async (req, res) => {
-    console.log("req.user", req.user);
     const user = req.user;
-    console.log("user", user);
 
     if (!user) {
         throw new ApiError(401, "Unauthorized or User not found");

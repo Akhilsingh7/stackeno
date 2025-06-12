@@ -8,14 +8,9 @@ const Layout = () => {
     const { isLoggedIn, loading } = useSelector((state) => state.userProfile);
     const dispatch = useDispatch();
 
-    console.log("isLoggedIn-layout - loading-layout", isLoggedIn, loading);
-
     useEffect(() => {
             dispatch(userProfileGet());
     }, []);
-
-    // console.log("isLoggedIn-layout-2", isLoggedIn);
-    // console.log("loading-layout-2",  loading);
 
     if (loading) {
         return (

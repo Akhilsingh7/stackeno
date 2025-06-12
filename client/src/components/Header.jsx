@@ -39,7 +39,7 @@ const Header = ({ isLoggedIn }) => {
           </div>
         ) : (
           <div>
-            <Link to="/login">Signup</Link>
+            <Link to="/signup">Signup</Link>
           </div>
         )}
         {isLoggedIn && (

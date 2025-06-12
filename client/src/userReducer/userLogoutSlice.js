@@ -14,7 +14,7 @@ import { updateUserProfile } from "./userProfileSlice";
                 withCredentials: true, // ✅ This is the correct way for Axios
             });
 
-            console.log("response", response);
+        
 
             if (!response.data.success) {
                 return thunkAPI.rejectWithValue(response.data.message);

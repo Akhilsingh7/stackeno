@@ -10,7 +10,6 @@ export const userProfileGet = createAsyncThunk("userProfile/get", async (_, thun
             withCredentials: true, // ← ADD THIS! Includes cookies in requests
         });
      
-        // console.log("Profile response:", response.data.success);
       
         if (!response.data.success) {
             return thunkAPI.rejectWithValue(response.data.message);
@@ -19,7 +18,6 @@ export const userProfileGet = createAsyncThunk("userProfile/get", async (_, thun
         return response.data.data;
 
     } catch (error) {
-        // console.error("Profile error:", error);
         return thunkAPI.rejectWithValue(error.response?.data?.message || "Failed to fetch profile");
     }
 })
@@ -35,16 +33,6 @@ const userProfileSlice = createSlice({
     name: "userProfile",    
     initialState,
     reducers: {
-        // Add a reducer to handle logout
-        logout: (state) => {
-            state.user = null;
-            state.isLoggedIn = false;
-            state.errorMessage = null;
-            state.loading = false;  
-        },
-        login: (state) =>{
-            state.isLoggedIn = true;
-        },
         updateUserProfile: (state, action)=>{
             state.user = action.payload.user;
             state.isLoggedIn = action.payload.isLoggedIn;

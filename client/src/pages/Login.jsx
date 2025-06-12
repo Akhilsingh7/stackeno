@@ -3,22 +3,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { postLoginUser } from "../userReducer/userLoginSlice";
 import { useNavigate } from "react-router-dom";
 import { userProfileGet, updateUserProfile } from "../userReducer/userProfileSlice";
+import { clearLoginError } from "../userReducer/userLoginSlice";
 
 const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { data, loading, error } = useSelector((state) => state.userLogin);
     const { isLoggedIn } = useSelector((state) => state.userProfile);
+    const [validationError, setValidationError] = useState("");
 
-    console.log("login-data",isLoggedIn);
 
     useEffect(() => {
-        // // If already logged in, redirect to home
-        // if (isLoggedIn) {
-        //     navigate('/', { replace: true });
-        //     return;
-        // }
-
         // If login was successful, fetch profile and redirect
         if (data?.success) {
             // dispatch(userProfileGet())
@@ -35,7 +30,12 @@ const Login = () => {
             navigate('/', { replace: true });
 
         }
-    }, [data ,dispatch]);
+        return () => {
+          if(error && error.message){
+            dispatch(clearLoginError());
+          }
+        }
+    }, [data , error, dispatch]);
 
     const [formData, setFormData] = useState({
         email: "",
@@ -48,6 +48,15 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        
+        // Add client-side validation
+        if (!formData.email || !formData.password) {
+          setValidationError("Please fill in all fields");
+          return;
+      }
+      
+        
+        setValidationError(""); // Clear validation error if fields are filled
         dispatch(postLoginUser(formData));
         setFormData({
             email: "",
@@ -58,6 +67,7 @@ const Login = () => {
     return (
         <div>
            <form className="flex flex-col items-center justify-center gap-8 w-1/2 mx-auto mt-20">
+              {validationError && <div className="text-red-500">{validationError}</div>}
               {error && <div className="text-red-500">{error.message}</div>}
               {data && <div className="text-green-500">{data.message}</div>}
               <input
@@ -69,6 +79,7 @@ const Login = () => {
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
                 autoComplete="email"
+                required
               />
               <input
                 type="password"
@@ -79,6 +90,7 @@ const Login = () => {
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
                 autoComplete="current-password"
+                required
               />
               <div>
                 <button

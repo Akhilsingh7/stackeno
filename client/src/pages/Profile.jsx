@@ -39,7 +39,6 @@ const Profile = () => {
 
     useEffect(() => {
       if(!isLoggedIn){
-        console.log("isLoggedIn-profile-2", isLoggedIn);
         navigate("/");
       }
     }, [isLoggedIn]);

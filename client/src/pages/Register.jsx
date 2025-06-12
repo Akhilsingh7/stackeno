@@ -1,10 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import { postRegisterUser } from "../userReducer/userRegisterSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { resetRegistrationError } from "../userReducer/userRegisterSlice";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const dispatch = useDispatch();
   const { data, loading, error } = useSelector((state) => state.userRegister);
+  const [validationError, setValidationError] = useState("");
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState ({
     username: "",
@@ -12,6 +16,20 @@ const Register = () => {
     password: "",
     position: "Software Engineer L1",
   });
+
+  useEffect(()=>{
+    console.log("data", data);
+    console.log("error", error);
+    if(data && Object.keys(data).length > 0){
+      console.log("datasss", data);
+      navigate("/login");
+    }
+    return () => {
+      if(error && error.message){
+        dispatch(resetRegistrationError());
+      }
+    }
+  },[data, error, dispatch]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,6 +41,11 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.username || !formData.email || !formData.password) {
+      setValidationError("Please fill in all fields");
+      return;
+    }
+    setValidationError("");
       dispatch(postRegisterUser(formData));
       setFormData({
         username: "",
@@ -36,6 +59,7 @@ const Register = () => {
     <>
       <div>
         <form className="flex flex-col items-center justify-center gap-8 w-1/2 mx-auto mt-20">
+          {validationError && <div className="text-red-500">{validationError}</div>}
           {error && <div className="text-red-500">{error.message}</div>}
           {data && <div className="text-green-500">{data.message}</div>}
           <input
