@@ -1,17 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import api from "../utils/ApiAxios";
 
 export const userProfileGet = createAsyncThunk("userProfile/get", async (_, thunkAPI) => {
     try {
-        const response = await axios.get("/api/v1/users/profile", {
-            headers: {
-                "Content-Type": "application/json",
-            },
-            withCredentials: true, // ← ADD THIS! Includes cookies in requests
-        });
+        const response = await api.get("/users/profile");
      
-      
-        if (!response.data.success) {
+        if(!response.data.success){
             return thunkAPI.rejectWithValue(response.data.message);
         }
         

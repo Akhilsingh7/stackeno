@@ -3,7 +3,6 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-
 const generateAccessAndRefreshToken = async (userId) => {
     try {
         const user = await User.findById(userId);
@@ -19,6 +18,44 @@ const generateAccessAndRefreshToken = async (userId) => {
         throw new ApiError(500, "Error generating access token and refresh token");
     }
 }
+
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  const refreshToken = req.cookies?.refreshToken;
+
+ if(!refreshToken){
+    throw new ApiError(401, "Unauthorized - No refresh token provided");
+ }
+
+ const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+ if(!decoded){
+    throw new ApiError(401, "Unauthorized - Invalid refresh token");
+ }
+
+ const user = await User.findById(decoded._id);
+
+ if(!user){
+    throw new ApiError(401, "Unauthorized - User not found");
+ }
+
+ if(user.refreshToken !== refreshToken){
+    throw new ApiError(401, "Unauthorized - Invalid refresh token");
+ }
+
+ const {accessToken , refreshToken:newRefreshToken} = await generateAccessAndRefreshToken(user._id);
+
+ const options = {
+    httpOnly: true,
+    secure: true,
+ }
+
+ return res.status(200).cookie("accessToken", accessToken, options).cookie("refreshToken",newRefreshToken, options).json(
+    new ApiResponse(200, {
+        accessToken,
+    }, "tokens refreshed successfully")
+ );
+ 
+}); 
 
 const registerUser = asyncHandler(async (req, res) => {
     const { email, username, password, position } = req.body;
@@ -115,15 +152,14 @@ const profileUser = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
-    const user = req.user;
-    if (!user) {
-        throw new ApiError(401, "Unauthorized or User not found");
-    }
 
-    user.refreshToken = null;
-    await user.save({ validateBeforeSave: false });
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {$unset: {refreshToken:1 }},
+        {new: true}
+    );
 
-    const options = {   
+    const options = {
         httpOnly: true,
         secure: true,
     }
@@ -136,4 +172,6 @@ const logoutUser = asyncHandler(async (req, res) => {
     );
 });
 
-export { registerUser, loginUser, profileUser, logoutUser };
+
+
+export { registerUser, loginUser, profileUser, logoutUser, refreshAccessToken};

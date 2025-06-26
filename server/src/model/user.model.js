@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+// import Blog from "./blogs.model";
 
 const userSchema = new Schema(
   {
@@ -45,7 +46,11 @@ const userSchema = new Schema(
     likes: {
       type: String,
       default: "0", // set a default value for likes
-    }
+    },
+    blogs: {
+      type: [Schema.Types.ObjectId],
+      ref: "Blog",
+    },
   },
   {
     timestamps: true, // this will create createdAt and updatedAt fields

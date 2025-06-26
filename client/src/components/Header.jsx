@@ -17,7 +17,7 @@ const Header = ({ isLoggedIn }) => {
       <div className="flex gap-4">
         {isLoggedIn ? (
           <div>
-            <Link to="/login">Blogs</Link>
+            <Link to="/blogs">Blogs</Link>
           </div>
         ) : (
           <div>

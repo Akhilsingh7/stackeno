@@ -12,7 +12,7 @@ import Profile from "./pages/Profile.jsx";
 import LayoutSecond from "./pages/LayoutSecond.jsx";
 import Blogs from "./pages/Blogs.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
-
+import CreateBlog from "./pages/CreateBlog.jsx";
 
 createRoot(document.getElementById("root")).render(
     <Provider store={store}>
@@ -26,6 +26,7 @@ createRoot(document.getElementById("root")).render(
                         <Route path="/profile" element={<Profile/>} />
                     </Route>
                     <Route path="/blogs" element={<Blogs/>} />
+                    <Route path="/create-blog" element={<CreateBlog/>} />
                 </Route>
             </Routes>
         </BrowserRouter>

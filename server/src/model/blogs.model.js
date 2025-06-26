@@ -11,16 +11,24 @@ const blogSchema = new Schema({
         required: true,
     },
     author: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
+        type: String,
         required: true,
     },
+    likes:{
+        type: [Schema.Types.ObjectId],
+        ref: "User",
+        default: [],    
+    },
+    tags:{
+        type: [String],
+        required: true,
+    },
+},
     {
         timestamps: true,
     }
 );
 
 
-const Blog = mongoose.model("Blog", blogSchema);
+export const Blog = mongoose.model("Blog", blogSchema);
 
-export default Blog;
